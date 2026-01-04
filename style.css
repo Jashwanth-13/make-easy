@@ -1,0 +1,20 @@
+/* ========================================
+   StudentSync Pro v4.0 - ENTERPRISE 3D DESIGN SYSTEM
+   ======================================== */
+
+/* FONTS & IMPORTS */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* CSS CUSTOM PROPERTIES - DESIGN TOKENS */
+:root {
+    /* COLORS */
+    --neon-blue: #00f5ff;
+    --neon-purple: #d400ff;
+    --neon-pink: #ff0080;
+    --neon-green: #39ff14;
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-glow: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255,
