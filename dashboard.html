@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - StudentSync Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.min.js"></script>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    
+    <!-- 3D Header -->
+    <header class="header-glass mega-3d">
+        <div class="header-left">
+            <button class="menu-btn pulse-glow" id="mobileMenu">☰</button>
+            <div class="logo-small neon-glow">StudentSync Pro</div>
+        </div>
+        
+        <div class="header-center">
+            <div class="search-container">
+                <input type="text" id="quickSearch" placeholder="🔍 Search tasks, assignments, schedule...">
+                <button class="search-btn">Search</button>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="notif-btn mega-hover" id="notifBell">
+                🔔 <span class="notif-badge" id="notifCount">3</span>
+            </button>
+            <div class="user-profile mega-hover">
+                <div class="avatar-3d" id="userAvatar"></div>
+                <span id="userName">Student</span>
+            </div>
+            <button class="btn-logout mega-hover" id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <!-- 3D Sidebar Navigation -->
+    <nav class="sidebar-nav mega-3d" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Navigation</h3>
+        </div>
+        <div class="nav-list">
+            <button class="nav-btn active mega-hover" data-tab="overview">
+                <span class="nav-icon">📊</span> Overview
+            </button>
+            <button class="nav-btn mega-hover" data-tab="todo">
+                <span class="nav-icon">✅</span> To-Do List
+            </button>
+            <button class="nav-btn mega-hover" data-tab="schedule">
+                <span class="nav-icon">📅</span> Schedule
+            </button>
+            <button class="nav-btn mega-hover" data-tab="assignments">
+                <span class="nav-icon">📝</span> Assignments
+            </button>
+            <button class="nav-btn mega-hover" data-tab="pomodoro">
+                <span class="nav-icon">⏱️</span> Pomodoro
+            </button>
+            <button class="nav-btn mega-hover" data-tab="documents">
+                <span class="nav-icon">📄</span> Documents
+            </button>
+            <button class="nav-btn mega-hover" data-tab="motivation">
+                <span class="nav-icon">💡</span> Motivation
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- OVERVIEW DASHBOARD -->
+        <section id="overview" class="tab-content active">
+            <div class="page-header">
+                <h1 class="page-title neon-glow">Dashboard Overview</h1>
+                <p class="page-subtitle">Your academic excellence journey</p>
+            </div>
+
+            <!-- KPI Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card elevate mega-3d">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar"><div class="progress-fill"></div></div>
+                    </div>
+                </div>
+                <div class="stat-card elevate mega-3d success-glow">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="highPriority">0</div>
+                    <div class="stat-label">High Priority</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar"><div class="progress-fill"></div></div>
+                    </div>
+                </div>
+                <div class="stat-card elevate mega-3d">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-value" id="studyTime">0h 0m</div>
+                    <div class="stat-label">Study Time</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar"><div class="progress-fill"></div></div>
+                    </div>
+                </div>
+                <div class="stat-card elevate mega-3d">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                    <div class="stat-progress">
+                        <div class="progress-bar"><div class="progress-fill"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Charts -->
+            <div class="charts-container">
+                <canvas id="progressCanvas" class="chart-3d"></canvas>
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div id="activityList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TO-DO LIST -->
+        <section id="todo" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title">Daily To-Do</h1>
+                <p>Priorities: <span class="badge high">🔥 High</span> <span class="badge med">🟡 Medium</span> <span class="badge low">🟢 Low</span></p>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <input type="text" id="todoInput" placeholder="Add task... (Math homework, Gym, etc.)">
+                    <select id="todoPriority">
+                        <option value="low">🟢 Low Priority</option>
+                        <option value="medium">🟡 Medium Priority</option>
+                        <option value="high">🔥 High Priority</option>
+                    </select>
+                    <button id="addTodoBtn" class="btn-primary mega-hover">Add Task</button>
+                </div>
+            </div>
+            
+            <div class="task-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="high">High</button>
+                <button class="filter-btn" data-filter="medium">Medium</button>
+                <button class="filter-btn" data-filter="low">Low</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+            </div>
+            
+            <div id="todoList" class="task-grid"></div>
+        </section>
+
+        <!-- CLASS SCHEDULE -->
+        <section id="schedule" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title">Class Schedule</h1>
+                <p>Organize your academic timetable</p>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <input type="text" id="className" placeholder="Class name (Calculus 101, Physics Lab)">
+                    <input type="time" id="classTime">
+                    <input type="text" id="classRoom" placeholder="Room/Class (A-101, Online)">
+                    <button id="addScheduleBtn" class="btn-primary mega-hover">Add Class</button>
+                </div>
+            </div>
+            
+            <div id="scheduleList" class="schedule-grid"></div>
+        </section>
+
+        <!-- ASSIGNMENTS TRACKER -->
+        <section id="assignments" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title">Assignments & Deadlines</h1>
+                <p>Never miss a deadline again</p>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <input type="text" id="assignName" placeholder="Assignment name">
+                    <input type="date" id="dueDate">
+                    <select id="assignPriority">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="high">🔥 High</option>
+                    </select>
+                    <button id="addAssignBtn" class="btn-primary mega-hover">Track Assignment</button>
+                </div>
+            </div>
+            
+            <div id="assignList" class="assignment-grid"></div>
+        </section>
+
+        <!-- POMODORO TIMER -->
+        <section id="pomodoro" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title">Pomodoro Study Timer</h1>
+                <p>25min focused work → 5min break</p>
+            </div>
+            
+            <div class="pomodoro-center">
+                <div class="timer-container mega-3d">
+                    <div class="timer-3d" id="pomoTimer">25:00</div>
+                    <div class="timer-progress">
+                        <svg class="timer-ring">
+                            <circle class="ring-bg"></circle>
+                            <circle class="ring-progress"></circle>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="timer-controls">
+                    <button id="startPomo" class="btn-large mega-hover pulse-glow">▶️ Start</button>
+                    <button id="pausePomo" class="btn-large mega-hover">⏸️ Pause</button>
+                    <button id="resetPomo" class="btn-large mega-hover">🔄 Reset</button>
+                    <select id="pomoDuration">
+                        <option value="25">25min (Work)</option>
+                        <option value="5">5min (Break)</option>
+                        <option value="15">15min (Long Break)</option>
+                    </select>
+                </div>
+                
+                <div class="pomo-stats">
+                    <span>Session: <span id="sessionCount">1</span>/4</span>
+                    <span>Today's Sessions: <span id="todaySessions">0</span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOCUMENT READER -->
+        <section id="documents" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title">Document Reader & Study Tracker</h1>
+                <p>Automatically tracks study time + assignment notifications</p>
+            </div>
+            
+            <div class="input-section">
+                <div class="doc-controls">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="docFile" accept=".pdf,.txt,.docx" class="file-input">
+                        <label for="docFile" class="file-label mega-hover">
+                            📄 Choose Document (PDF/TXT)
+                        </label>
+                    </div>
+                    <div class="time-tracker">
+                        <div class="time-display">
+                            Study Time: <span id="docStudyTime">0m 0s</span>
+                        </div>
+                        <button id="docNotification" class="btn-warning mega-hover">📢 Notify to Start</button>
+                        <button id="markDocComplete" class="btn-success mega-hover">✅ Mark Complete</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="docViewer" class="doc-viewer mega-3d"></div>
+        </section>
+
+        <!-- MOTIVATION SECTION -->
+        <section id="motivation" class="tab-content">
+            <div class="page-header">
+                <h1 class="page-title">Motivational Boost</h1>
+                <p>Get inspired with random videos & study tips</p>
+            </div>
+            
+            <div class="motivation-controls">
+                <button id="randomVideoBtn" class="btn-gradient mega-hover btn-large">🎥 Random Video</button>
+                <button id="randomTipBtn" class="btn-gradient mega-hover btn-large">💡 Random Tip</button>
+            </div>
+            
+            <div class="video-container">
+                <iframe id="youtubePlayer" style="display:none; width:100%; height:400px; border-radius:20px;"></iframe>
+            </div>
+            
+            <div id="motivationTip" class="motivation-tip-container"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
