@@ -3,95 +3,781 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudentSync Pro - Ultimate 3D Academic Platform</title>
-    <link rel="manifest" href="manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>StudentSync Pro - Complete Working App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            --danger: linear-gradient(135deg, #ed213a 0%, #93291e 100%);
+            --glass: rgba(255,255,255,0.1);
+            --shadow: 0 8px 32px rgba(31,38,135,0.37);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* LOGIN PAGE */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .login-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: floatIn 1s ease-out;
+        }
+        
+        @keyframes floatIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .logo { 
+            text-align: center; 
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-group input::placeholder { color: rgba(255,255,255,0.7); }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.4);
+        }
+        
+        .btn-google {
+            background: linear-gradient(45deg, #4285f4, #34a853);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        /* DASHBOARD */
+        .dashboard { display: none; }
+        .dashboard.active { display: block; }
+        
+        .header {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+            border-radius: 10px;
+            margin: 2rem;
+            padding: 0.5rem;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: none;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .tab-btn.active, .tab-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .tab-content.active { display: block; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .stat-value { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .stat-label { color: rgba(255,255,255,0.8); }
+        
+        .input-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .input-row input, .input-row select {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            min-width: 150px;
+        }
+        
+        .list-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .list-item {
+            background: var(--glass);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .list-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .priority-high { border-left: 4px solid #ff4444; }
+        .priority-medium { border-left: 4px solid #ffaa00; }
+        .priority-low { border-left: 4px solid #44ff44; }
+        
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 300;
+            text-align: center;
+            margin: 2rem 0;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-circle:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .doc-viewer {
+            height: 400px;
+            background: var(--glass);
+            border-radius: 10px;
+            padding: 1.5rem;
+            overflow: auto;
+            border: 2px dashed rgba(255,255,255,0.3);
+            margin-top: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .video-container iframe {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .input-row { flex-direction: column; }
+            .tabs { flex-direction: column; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <canvas id="particleCanvas"></canvas>
-    
-    <div class="login-container">
-        <!-- Floating 3D Orbs -->
-        <div class="floating-orbs">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
-            <div class="orb orb-3"></div>
-            <div class="orb orb-4"></div>
-            <div class="orb orb-5"></div>
-        </div>
-
-        <!-- Main Login Card -->
-        <div class="login-card mega-3d">
-            <!-- Morphing Logo System -->
-            <div class="logo-morph">
-                <div class="morph-ring"></div>
-                <div class="morph-ring delay-1"></div>
-                <div class="morph-ring delay-2"></div>
-                <div class="morph-ring delay-3"></div>
-                <h1 class="logo-explode">Student<span class="neon-glow">SYNC</span>Pro</h1>
-                <p class="liquid-text tagline-3d">Academic Excellence Engine</p>
-            </div>
-
-            <!-- Login Form -->
-            <form id="loginForm" class="auth-form liquid-form">
-                <div class="input-group morph-input">
-                    <input type="email" id="email" placeholder="student@college.edu" required autocomplete="email">
-                    <label class="float-label">Email Address</label>
-                    <span class="input-particle"></span>
-                    <span class="input-glow"></span>
+    <!-- LOGIN PAGE -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <div class="logo">Student<span style="color: #fff;">Sync</span> Pro</div>
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="student@college.edu" required>
                 </div>
-                
-                <div class="input-group morph-input">
-                    <input type="password" id="password" placeholder="••••••••••••" required autocomplete="current-password">
-                    <label class="float-label">Password</label>
-                    <span class="input-particle"></span>
-                    <span class="input-glow"></span>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="••••••••" required>
                 </div>
-
-                <!-- Action Buttons -->
-                <div class="form-actions">
-                    <button type="submit" class="btn-neon mega-hover btn-full">
-                        <span>Sign In</span>
-                        <div class="btn-shine"></div>
-                    </button>
-                    
-                    <button type="button" id="googleLogin" class="btn-google pulse-glow btn-full">
-                        <svg class="google-icon" viewBox="0 0 24 24">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                        </svg>
-                        Continue with Google
-                    </button>
-                </div>
-
-                <div class="auth-links">
-                    <a href="#" id="forgotPwd" class="link-glow">Forgot Password?</a>
-                    <span>or</span>
-                    <a href="#" class="link-glow">Create Account</a>
-                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+                <button type="button" class="btn btn-google" id="googleLogin">
+                    🌐 Continue with Google
+                </button>
             </form>
-
-            <!-- Feature Preview Cards -->
-            <div class="features-preview">
-                <div class="feature-card float-card">
-                    <div class="feature-icon">⏱️</div>
-                    <span>Pomodoro Timer</span>
-                </div>
-                <div class="feature-card float-card">
-                    <div class="feature-icon">📚</div>
-                    <span>Doc Reader</span>
-                </div>
-                <div class="feature-card float-card">
-                    <div class="feature-icon">📊</div>
-                    <span>Analytics</span>
-                </div>
-            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <div class="header">
+            <div>StudentSync Pro</div>
+            <button class="btn btn-primary" id="logoutBtn">Logout</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="overview">📊 Overview</button>
+            <button class="tab-btn" data-tab="todo">✅ To-Do</button>
+            <button class="tab-btn" data-tab="schedule">📅 Schedule</button>
+            <button class="tab-btn" data-tab="assignments">📝 Assignments</button>
+            <button class="tab-btn" data-tab="pomodoro">⏱️ Pomodoro</button>
+            <button class="tab-btn" data-tab="documents">📄 Documents</button>
+            <button class="tab-btn" data-tab="motivation">💡 Motivation</button>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="highPriority">0</div>
+                    <div class="stat-label">High Priority</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-value" id="studyTime">0m</div>
+                    <div class="stat-label">Study Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" id="streak">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TO-DO -->
+        <div id="todo" class="tab-content">
+            <div class="input-row">
+                <input type="text" id="todoInput" placeholder="Add task...">
+                <select id="todoPriority">
+                    <option value="low">🟢 Low</option>
+                    <option value="medium">🟡 Medium</option>
+                    <option value="high">🔥 High</option>
+                </select>
+                <button class="btn btn-primary" id="addTodo">Add</button>
+            </div>
+            <div id="todoList" class="list-container"></div>
+        </div>
+
+        <!-- SCHEDULE -->
+        <div id="schedule" class="tab-content">
+            <div class="input-row">
+                <input type="text" id="className" placeholder="Class name">
+                <input type="time" id="classTime">
+                <button class="btn btn-primary" id="addSchedule">Add</button>
+            </div>
+            <div id="scheduleList" class="list-container"></div>
+        </div>
+
+        <!-- ASSIGNMENTS -->
+        <div id="assignments" class="tab-content">
+            <div class="input-row">
+                <input type="text" id="assignName" placeholder="Assignment name">
+                <input type="date" id="dueDate">
+                <button class="btn btn-primary" id="addAssignment">Add</button>
+            </div>
+            <div id="assignList" class="list-container"></div>
+        </div>
+
+        <!-- POMODORO -->
+        <div id="pomodoro" class="tab-content">
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div class="timer-controls">
+                <button class="btn-circle btn-primary" id="startTimer">▶️</button>
+                <button class="btn-circle" id="pauseTimer">⏸️</button>
+                <button class="btn-circle" id="resetTimer">🔄</button>
+            </div>
+        </div>
+
+        <!-- DOCUMENTS -->
+        <div id="documents" class="tab-content">
+            <div class="input-row">
+                <input type="file" id="docFile" accept=".pdf,.txt">
+                <div>Study Time: <span id="docTime">0m 0s</span></div>
+                <button class="btn btn-warning" id="docNotify">Notify</button>
+            </div>
+            <div id="docViewer" class="doc-viewer">Upload PDF/TXT to start reading</div>
+        </div>
+
+        <!-- MOTIVATION -->
+        <div id="motivation" class="tab-content">
+            <div class="input-row">
+                <button class="btn btn-primary" id="randomVideo">🎥 Random Video</button>
+                <button class="btn btn-primary" id="randomTip">💡 Random Tip</button>
+            </div>
+            <div class="video-container" id="videoContainer"></div>
+            <div id="tipDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        // STATE MANAGEMENT
+        const state = {
+            todos: JSON.parse(localStorage.getItem('todos')) || [],
+            schedules: JSON.parse(localStorage.getItem('schedules')) || [],
+            assignments: JSON.parse(localStorage.getItem('assignments')) || [],
+            user: localStorage.getItem('user') || null,
+            pomoTime: 25 * 60,
+            isRunning: false,
+            docTime: 0
+        };
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', function() {
+            if (state.user) {
+                showDashboard();
+            }
+            setupEventListeners();
+            renderAll();
+        });
+
+        // LOGIN
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            state.user = document.getElementById('email').value;
+            localStorage.setItem('user', state.user);
+            showDashboard();
+        });
+
+        document.getElementById('googleLogin').addEventListener('click', function() {
+            state.user = 'student@gmail.com';
+            localStorage.setItem('user', state.user);
+            showDashboard();
+        });
+
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboard').classList.add('active');
+        }
+
+        // EVENT LISTENERS
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(this.dataset.tab).classList.add('active');
+                });
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.clear();
+                location.reload();
+            });
+
+            // To-Do
+            document.getElementById('addTodo').addEventListener('click', addTodo);
+            
+            // Schedule
+            document.getElementById('addSchedule').addEventListener('click', addSchedule);
+            
+            // Assignments
+            document.getElementById('addAssignment').addEventListener('click', addAssignment);
+            
+            // Pomodoro
+            document.getElementById('startTimer').addEventListener('click', startPomodoro);
+            document.getElementById('pauseTimer').addEventListener('click', pausePomodoro);
+            document.getElementById('resetTimer').addEventListener('click', resetPomodoro);
+            
+            // Documents
+            document.getElementById('docFile').addEventListener('change', loadDocument);
+            document.getElementById('docNotify').addEventListener('click', showDocNotification);
+            
+            // Motivation
+            document.getElementById('randomVideo').addEventListener('click', showRandomVideo);
+            document.getElementById('randomTip').addEventListener('click', showRandomTip);
+        }
+
+        // TO-DO FUNCTIONS
+        function addTodo() {
+            const text = document.getElementById('todoInput').value.trim();
+            const priority = document.getElementById('todoPriority').value;
+            if (text) {
+                state.todos.push({
+                    id: Date.now(),
+                    text,
+                    priority,
+                    completed: false
+                });
+                localStorage.setItem('todos', JSON.stringify(state.todos));
+                renderTodos();
+                document.getElementById('todoInput').value = '';
+                updateStats();
+            }
+        }
+
+        function renderTodos() {
+            const container = document.getElementById('todoList');
+            container.innerHTML = state.todos.map(todo => `
+                <div class="list-item priority-${todo.priority}">
+                    <div>
+                        <strong>${todo.text}</strong>
+                        <div>${todo.priority.toUpperCase()} • ${new Date(todo.id).toLocaleDateString()}</div>
+                    </div>
+                    <div>
+                        <button onclick="toggleTodo(${todo.id})" style="margin-right: 0.5rem;">${todo.completed ? '↶' : '✅'}</button>
+                        <button onclick="deleteTodo(${todo.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTodo(id) {
+            const todo = state.todos.find(t => t.id === id);
+            todo.completed = !todo.completed;
+            localStorage.setItem('todos', JSON.stringify(state.todos));
+            renderTodos();
+            updateStats();
+        }
+
+        function deleteTodo(id) {
+            state.todos = state.todos.filter(t => t.id !== id);
+            localStorage.setItem('todos', JSON.stringify(state.todos));
+            renderTodos();
+            updateStats();
+        }
+
+        // SCHEDULE FUNCTIONS
+        function addSchedule() {
+            const name = document.getElementById('className').value.trim();
+            const time = document.getElementById('classTime').value;
+            if (name && time) {
+                state.schedules.push({ id: Date.now(), name, time });
+                localStorage.setItem('schedules', JSON.stringify(state.schedules));
+                renderSchedules();
+                document.getElementById('className').value = '';
+                document.getElementById('classTime').value = '';
+            }
+        }
+
+        function renderSchedules() {
+            document.getElementById('scheduleList').innerHTML = state.schedules.map(s => `
+                <div class="list-item">
+                    <div>
+                        <strong>📚 ${s.name}</strong>
+                        <div>🕐 ${s.time}</div>
+                    </div>
+                    <button onclick="deleteSchedule(${s.id})">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteSchedule(id) {
+            state.schedules = state.schedules.filter(s => s.id !== id);
+            localStorage.setItem('schedules', JSON.stringify(state.schedules));
+            renderSchedules();
+        }
+
+        // ASSIGNMENTS FUNCTIONS
+        function addAssignment() {
+            const name = document.getElementById('assignName').value.trim();
+            const date = document.getElementById('dueDate').value;
+            if (name && date) {
+                state.assignments.push({
+                    id: Date.now(),
+                    name,
+                    dueDate: date,
+                    completed: false
+                });
+                localStorage.setItem('assignments', JSON.stringify(state.assignments));
+                renderAssignments();
+                document.getElementById('assignName').value = '';
+                document.getElementById('dueDate').value = '';
+            }
+        }
+
+        function renderAssignments() {
+            document.getElementById('assignList').innerHTML = state.assignments.map(assign => {
+                const due = new Date(assign.dueDate);
+                const isOverdue = due < new Date();
+                return `
+                    <div class="list-item ${isOverdue ? 'priority-high' : ''}">
+                        <div>
+                            <strong>${assign.name}</strong>
+                            <div>📅 ${assign.dueDate}</div>
+                            ${isOverdue ? '<div style="color: #ff4444;">OVERDUE!</div>' : ''}
+                        </div>
+                        <div>
+                            <button onclick="toggleAssignment(${assign.id})">${assign.completed ? '↶' : '✅'}</button>
+                            <button onclick="deleteAssignment(${assign.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleAssignment(id) {
+            const assign = state.assignments.find(a => a.id === id);
+            assign.completed = !assign.completed;
+            localStorage.setItem('assignments', JSON.stringify(state.assignments));
+            renderAssignments();
+        }
+
+        function deleteAssignment(id) {
+            state.assignments = state.assignments.filter(a => a.id !== id);
+            localStorage.setItem('assignments', JSON.stringify(state.assignments));
+            renderAssignments();
+        }
+
+        // POMODORO FUNCTIONS
+        let pomoInterval;
+        function startPomodoro() {
+            if (!state.isRunning) {
+                state.isRunning = true;
+                pomoInterval = setInterval(() => {
+                    state.pomoTime--;
+                    updateTimerDisplay();
+                    if (state.pomoTime <= 0) {
+                        alert('🎉 Pomodoro Complete! Take 5 min break!');
+                        resetPomodoro();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pausePomodoro() {
+            state.isRunning = false;
+            clearInterval(pomoInterval);
+        }
+
+        function resetPomodoro() {
+            state.isRunning = false;
+            clearInterval(pomoInterval);
+            state.pomoTime = 25 * 60;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const min = Math.floor(state.pomoTime / 60);
+            const sec = state.pomoTime % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // DOCUMENT FUNCTIONS
+        let docStartTime = 0;
+        function loadDocument(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            docStartTime = Date.now();
+            const viewer = document.getElementById('docViewer');
+            
+            if (file.name.endsWith('.pdf')) {
+                viewer.innerHTML = 'PDF preview not supported in single file. Time tracking active!';
+            } else {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    viewer.innerHTML = `<pre style="white-space: pre-wrap;">${e.target.result}</pre>`;
+                };
+                reader.readAsText(file);
+            }
+            
+            // Track time
+            setInterval(() => {
+                if (docStartTime) {
+                    const elapsed = Math.floor((Date.now() - docStartTime) / 1000);
+                    const mins = Math.floor(elapsed / 60);
+                    const secs = elapsed % 60;
+                    document.getElementById('docTime').textContent = `${mins}m ${secs}s`;
+                    state.docTime = elapsed;
+                }
+            }, 1000);
+        }
+
+        function showDocNotification() {
+            if (Notification.permission === 'granted') {
+                new Notification('📚 Start Assignment!', {
+                    body: `You studied for ${Math.floor(state.docTime/60)}min. Time to work!`
+                });
+            } else {
+                alert('Studied for ' + Math.floor(state.docTime/60) + 'min. Time to start assignment!');
+            }
+        }
+
+        // MOTIVATION FUNCTIONS
+        const videos = [
+            'https://www.youtube.com/embed/ZYyND0JAB8E?autoplay=1',
+            'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1',
+            'https://www.youtube.com/embed/Ya4ceIJ7N0w?autoplay=1'
+        ];
+
+        const tips = [
+            'Take 5min breaks every 25min (Pomodoro)',
+            'Prioritize 🔥HIGH tasks first',
+            'Review progress daily at 8 PM',
+            'Use document tracker for study time',
+            'Complete 4 Pomodoros before lunch'
+        ];
+
+        function showRandomVideo() {
+            const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+            const container = document.getElementById('videoContainer');
+            container.innerHTML = `<iframe src="${randomVideo}" frameborder="0" allowfullscreen></iframe>`;
+        }
+
+        function showRandomTip() {
+            const tip = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('tipDisplay').innerHTML = `
+                <div style="background: var(--glass); padding: 1.5rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                    <h3>💡 Study Tip</h3>
+                    <p>${tip}</p>
+                </div>
+            `;
+        }
+
+        // STATS & RENDER
+        function renderAll() {
+            renderTodos();
+            renderSchedules();
+            renderAssignments();
+            updateStats();
+            updateTimerDisplay();
+        }
+
+        function updateStats() {
+            document.getElementById('totalTasks').textContent = state.todos.length;
+            document.getElementById('highPriority').textContent = state.todos.filter(t => t.priority === 'high').length;
+            document.getElementById('studyTime').textContent = Math.floor(state.docTime/60) + 'm';
+            document.getElementById('streak').textContent = '7'; // Simplified
+        }
+
+        // NOTIFICATIONS
+        if ('Notification' in window) {
+            Notification.requestPermission();
+        }
+    </script>
 </body>
 </html>
